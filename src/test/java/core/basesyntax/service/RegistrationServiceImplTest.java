@@ -1,6 +1,6 @@
 package core.basesyntax.service;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import core.basesyntax.db.Storage;
@@ -38,7 +38,7 @@ class RegistrationServiceImplTest {
     @Test
     void register_uniqueLogin_Ok() {
         User testUser = new User("TestUser", "TestPassword", 18);
-        assertDoesNotThrow(() -> testRegistrationService.register(testUser));
+        assertEquals(testRegistrationService.register(testUser), testUser);
     }
 
     @Test
@@ -52,7 +52,7 @@ class RegistrationServiceImplTest {
     @Test
     void register_loginIsLongEnough_Ok() {
         User testUser = new User("TestUser", "TestPassword", 18);
-        assertDoesNotThrow(() -> testRegistrationService.register(testUser));
+        assertEquals(testRegistrationService.register(testUser), testUser);
     }
 
     @Test
@@ -70,13 +70,13 @@ class RegistrationServiceImplTest {
     @Test
     void register_passwordIsLongEnough_Ok() {
         User testUser = new User("TestUser", "TestPassword", 18);
-        assertDoesNotThrow(() -> testRegistrationService.register(testUser));
+        assertEquals(testRegistrationService.register(testUser), testUser);
     }
 
     @Test
     void register_userIsAdult_Ok() {
         User testUser = new User("TestUser", "TestPassword", 18);
-        assertDoesNotThrow(() -> testRegistrationService.register(testUser));
+        assertEquals(testRegistrationService.register(testUser), testUser);
     }
 
     @Test
