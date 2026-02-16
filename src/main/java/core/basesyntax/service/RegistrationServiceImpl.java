@@ -6,26 +6,31 @@ import core.basesyntax.model.User;
 
 public class RegistrationServiceImpl implements RegistrationService {
     private final StorageDao storageDao = new StorageDaoImpl();
+    private static final int MIN_AGE = 18;
+    private static final int MIN_LENGTH = 6;
 
     @Override
     public User register(User user) throws InvalidDataException {
+        if (user.getLogin() == null || user.getPassword() == null || user.getAge() == 0) {
+            throw new InvalidDataException("No empty data allowed");
+        }
         // Check if user already exists
         if (storageDao.get(user.getLogin()) != null) {
             throw new InvalidDataException("User already exists");
         }
 
         // Check if login is at least 6 characters long
-        if (user.getLogin().length() < 6) {
+        if (user.getLogin().length() < MIN_LENGTH) {
             throw new InvalidDataException("Login must be at least 6 characters");
         }
 
         // Check if password is at least 6 characters long
-        if (user.getPassword().length() < 6) {
+        if (user.getPassword().length() < MIN_LENGTH) {
             throw new InvalidDataException("Password must be at least 6 characters");
         }
 
         // Check if user is at least 18
-        if (user.getAge() < 18) {
+        if (user.getAge() < MIN_AGE) {
             throw new InvalidDataException("User must be at least 18");
         }
 
