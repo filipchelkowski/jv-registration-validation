@@ -3,6 +3,8 @@ package core.basesyntax.service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import core.basesyntax.dao.StorageDao;
+import core.basesyntax.dao.StorageDaoImpl;
 import core.basesyntax.db.Storage;
 import core.basesyntax.model.User;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,10 +12,12 @@ import org.junit.jupiter.api.Test;
 
 class RegistrationServiceImplTest {
     private RegistrationServiceImpl testRegistrationService = new RegistrationServiceImpl();
+    private StorageDao storageDao = new StorageDaoImpl();
 
     @BeforeEach
     void setUp() {
         testRegistrationService = new RegistrationServiceImpl();
+        storageDao = new StorageDaoImpl();
         Storage.people.clear();
     }
 
@@ -31,7 +35,7 @@ class RegistrationServiceImplTest {
 
     @Test
     void register_nullAge_notOk() {
-        User testUser = new User("TestUser", "TestPassword", 0);
+        User testUser = new User("TestUser", "TestPassword", null);
         assertThrows(InvalidDataException.class, () -> testRegistrationService.register(testUser));
     }
 
@@ -39,6 +43,7 @@ class RegistrationServiceImplTest {
     void register_uniqueLogin_Ok() {
         User testUser = new User("TestUser", "TestPassword", 18);
         assertEquals(testRegistrationService.register(testUser), testUser);
+        assertEquals(storageDao.get(testUser.getLogin()), testUser);
     }
 
     @Test
@@ -53,6 +58,7 @@ class RegistrationServiceImplTest {
     void register_loginIsLongEnough_Ok() {
         User testUser = new User("TestUser", "TestPassword", 18);
         assertEquals(testRegistrationService.register(testUser), testUser);
+        assertEquals(storageDao.get(testUser.getLogin()), testUser);
     }
 
     @Test
@@ -69,14 +75,41 @@ class RegistrationServiceImplTest {
 
     @Test
     void register_passwordIsLongEnough_Ok() {
-        User testUser = new User("TestUser", "TestPassword", 18);
+        User testUser = new User("TestUser", "12345678", 18);
         assertEquals(testRegistrationService.register(testUser), testUser);
+        assertEquals(storageDao.get(testUser.getLogin()), testUser);
+    }
+
+    @Test
+    void register_passwordIsZero_notOk() {
+        User testUser = new User("TestUser", "", 18);
+        assertThrows(InvalidDataException.class, () -> testRegistrationService.register(testUser));
+    }
+
+    @Test
+    void register_passwordIsThree_notOk() {
+        User testUser = new User("TestUser", "123", 18);
+        assertThrows(InvalidDataException.class, () -> testRegistrationService.register(testUser));
+    }
+
+    @Test
+    void register_passwordIsFive_notOk() {
+        User testUser = new User("TestUser", "12345", 18);
+        assertThrows(InvalidDataException.class, () -> testRegistrationService.register(testUser));
+    }
+
+    @Test
+    void register_passwordIsSix_Ok() {
+        User testUser = new User("TestUser", "123456", 18);
+        assertEquals(testRegistrationService.register(testUser), testUser);
+        assertEquals(storageDao.get(testUser.getLogin()), testUser);
     }
 
     @Test
     void register_userIsAdult_Ok() {
         User testUser = new User("TestUser", "TestPassword", 18);
         assertEquals(testRegistrationService.register(testUser), testUser);
+        assertEquals(storageDao.get(testUser.getLogin()), testUser);
     }
 
     @Test

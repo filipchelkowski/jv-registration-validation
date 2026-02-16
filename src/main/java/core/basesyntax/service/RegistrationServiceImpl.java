@@ -11,9 +11,22 @@ public class RegistrationServiceImpl implements RegistrationService {
 
     @Override
     public User register(User user) throws InvalidDataException {
-        if (user.getLogin() == null || user.getPassword() == null || user.getAge() == 0) {
-            throw new InvalidDataException("No empty data allowed");
+        if (user == null) {
+            throw new InvalidDataException("User can't be null");
         }
+
+        if (user.getLogin() == null) {
+            throw new InvalidDataException("Login can't be null");
+        }
+
+        if (user.getPassword() == null) {
+            throw new InvalidDataException("Password can't be null");
+        }
+
+        if (user.getAge() == null) {
+            throw new InvalidDataException("Age can't be null");
+        }
+
         // Check if user already exists
         if (storageDao.get(user.getLogin()) != null) {
             throw new InvalidDataException("User already exists");
